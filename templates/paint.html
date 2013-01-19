@@ -18,7 +18,7 @@ body
 <button onclick="stroke()">PENCIL</button>
 <button onclick="rect()">RECTANGLE</button>
 <button onclick="circle()">CIRCLE</button>
-<button onclick="clear1()">CLEAR</button>
+<button onclick="clear()">CLEAR</button>
 <button onclick="erase()">ERASER</button>
 <button id="press" onclick="fillobject('press')">FILL</button>
 
@@ -198,38 +198,8 @@ body
   		}
  	}
 	
- 	function erase(){
-  		document.documentElement.style.cursor='url("http://cur.cursors-4u.net/others/oth-8/oth759.cur"),auto'
-  		var flag=0
-  		var flag1=0
-  		var rect = mycanvas.getBoundingClientRect()
-  		mycanvas.onmouseup=secondpoint2
-  		mycanvas.onmousedown=firstpoint2
-  		mycanvas.onmousemove=movepoint2
-  		function firstpoint2(e3){
-
-   			flag1=1 
-   			flag=0
-  		}
-  
-  		function secondpoint2(e3){
-   			flag=1
-  		}
-  		function movepoint2(e3){
-   			if(flag1==1&&flag==0){
-    				rect = mycanvas.getBoundingClientRect()
-    				c.beginPath()
-    				c.fillStyle="white"
-    				c.arc(e3.clientX-rect.left,e3.clientY-rect.top,eraserthick,0,2*Math.PI,true)
-
-          			c.strokeStyle = 'white'
-    				c.fill()
-          			c.stroke()
-   			}
-  		}
- 	}
  
-	function clear1(){
+	function clear(){
   		c.fillStyle="white"
   		c.fillRect(0,0,1200,425)
  	}
