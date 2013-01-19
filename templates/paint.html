@@ -1,0 +1,383 @@
+<html>
+<head>
+<style type="text/css">
+body
+{
+	background-color:#745737;
+}
+
+</style>
+<table>
+<tr>
+<th valign="top">
+<div align="left">
+<canvas id="mycanvas" width=985 height=425 style="border: 3px solid black"></canvas><br>
+<div>
+<center>
+<button onclick="line()">LINE</button>
+<button onclick="stroke()">PENCIL</button>
+<button onclick="rect()">RECTANGLE</button>
+<button onclick="circle()">CIRCLE</button>
+<button onclick="clear1()">CLEAR</button>
+<button onclick="erase()">ERASER</button>
+<button id="press" onclick="fillobject('press')">FILL</button>
+
+<font style="bold">Thick</font>
+<select id="sbox" onchange = "size1()"><option value="2">2px</option><option value="4">4px</option><option value="6">6px</option><option value="8">8px</option><option value="10">10px</option><option value="12">12px</option><option value="14">14px</option>
+</select>
+
+<br>
+<table>
+<tr>
+<td><button style ="height:20px;width:20px; background-color:F40505"onclick="setcolor('F40505');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:FE0202"onclick="setcolor('FE0202');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:red"onclick="setcolor('red');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:0DBD04"onclick="setcolor('0DBD04');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:076A02"onclick="setcolor('076A02');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:075903"onclick="setcolor('075903');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:064602"onclick="setcolor('064602');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:013638"onclick="setcolor('013638');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:0408FF"onclick="setcolor('0408FF');"></button></td>		
+<td><button style ="height:20px;width:20px; background-color:0609B5"onclick="setcolor('0609B5');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:02059A"onclick="setcolor('02059A');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:390134"onclick="setcolor('390134');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:4B0245"onclick="setcolor('4B0245');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:610159"onclick="setcolor('610159');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:C96902"onclick="setcolor('C96902');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:D66F02"onclick="setcolor('D66F02');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:DAC907"onclick="setcolor('DAC907');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:D7C504"onclick="setcolor('D7C504');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:FCFCF8"onclick="setcolor('FCFCF8');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:D8D8D5"onclick="setcolor('D8D8D5');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:C8C8C7"onclick="setcolor('C8C8C7');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:AFAFAE"onclick="setcolor('AFAFAE');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:999996"onclick="setcolor('999996');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:797977"onclick="setcolor('797977');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:3F3F3C"onclick="setcolor('3F3F3C');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:262626"onclick="setcolor('262626');"></button></td>
+<td><button style ="height:20px;width:20px; background-color:000000"onclick="setcolor('000000');"></button></td>
+</tr>
+</table>
+
+<form >
+<input type="text" id="tex">
+<input type="button" value="SAVE" onclick="save();">
+<a href="/"><b>New</b></a>
+</form>
+
+</div>
+<center>
+<b>Saved Files</b>
+<br><p id="element"></p><br>
+<br>
+</th>
+</tr>
+</head>
+
+<body>
+<script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+<script type="text/javascript">
+	wholedata=new Array()
+	data= new Array()
+	fill=0
+	imagedata='{{imagedata|safe}}'
+	imagedata=JSON.parse(imagedata)
+ 	mycanvas=document.getElementById("mycanvas")
+ 	c=mycanvas.getContext("2d")
+ 	c.fillStyle="white"
+ 	c.fillRect(0,0,985,425)
+ 	if (imagedata==[]){
+ 		wholedata=[]
+ 	}else{
+ 		wholedata=imagedata
+ 		draw()
+ 	}
+	wholedata=[]
+ 	color2="black"
+ 	eraserthick=2
+
+ 	filename=[]
+	lis='{{lis|tojson|safe}}'
+	name=""
+	lis=JSON.parse(lis)
+	for(i in lis){
+	name+='<a href='+lis[i]+' onclick="draw();" id="link">'+lis[i]+'</a><br>'
+		document.getElementById("element").innerHTML=name}
+ 	
+ 	
+ 	function size1(){
+ 	  	c.lineWidth= document.getElementById("sbox").value;  
+ 	}
+ 	function erthick(){
+  		eraserthick=document.getElementById("eraser").value;
+ 	}
+ 	function setcolor(color1){
+  		color2=color1
+  		c.strokeStyle=color1
+  		c.fillStyle=color1  
+ 	}
+ 	function fillobject(press){
+  		fill=(fill+1)%2
+ 	}
+
+ 	c1=mycanvas.getContext("2d")
+ 	document.onselectstart = function(){ return false; }
+
+ 	function line(){
+ 		setcolor(color2)
+  		document.documentElement.style.cursor="crosshair"
+  		var flag=0
+  		var flag1=0
+  		var rect = mycanvas.getBoundingClientRect()
+  		mycanvas.onmouseup=secondpoint
+  		mycanvas.onmousedown=firstpoint
+  		mycanvas.onmousemove=movepoint
+  		function firstpoint(e1){
+   			im=c.getImageData(0,0,mycanvas.width,mycanvas.height)
+   			rect = mycanvas.getBoundingClientRect()
+   			x1=e1.clientX-rect.left
+   			y1=e1.clientY-rect.top
+   			flag1=1 
+   			flag=0
+  		}
+  
+  		function secondpoint(){
+   			flag=1
+			var s={"Type":"line", "startpointx":x1,"startpointy":y1,"endpointx":c3,"endpointy":c4,"color":color2}
+			wholedata.push(s)	
+  		}
+  		function movepoint(e1){
+   			if(flag==0&&flag1==1){
+    				rect = mycanvas.getBoundingClientRect()
+    				c.putImageData(im,0,0)
+    				c.beginPath()
+    				c.moveTo(x1,y1)
+    				c3=e1.clientX-rect.left
+    				c4=e1.clientY-rect.top
+    				c.lineTo(c3,c4)
+    				c.stroke()
+    				c.closePath()
+    
+   			}
+  		}
+	
+ 	}
+	
+ 	function stroke(){
+  		setcolor(color2)
+  		document.documentElement.style.cursor='url("http://cur.cursors-4u.net/user/use-1/use151.cur"),auto'
+  		var flag=0
+  		var flag1=0
+  		var rect = mycanvas.getBoundingClientRect()
+  		mycanvas.onmouseup=secondpoint1
+  		mycanvas.onmousedown=firstpoint1
+  		mycanvas.onmousemove=movepoint1
+  		function firstpoint1(e2){
+   	  		rect = mycanvas.getBoundingClientRect()
+   			x1=e2.clientX-rect.left
+   			y1=e2.clientY-rect.top
+   			flag1=1 
+   			flag=0
+  		}
+  
+  		function secondpoint1(e2){
+      			flag=1
+  		}
+  		function movepoint1(e2){
+   			if(flag1==1&&flag==0){
+    				rect = mycanvas.getBoundingClientRect()
+    				c.beginPath()
+    				c.moveTo(x1,y1)
+    				c.lineTo(e2.clientX-rect.left,e2.clientY-rect.top)
+    				c.stroke()
+    				c.closePath()
+   				x1=e2.clientX-rect.left
+   				y1=e2.clientY-rect.top
+    
+   			}
+  		}
+ 	}
+	
+ 	function erase(){
+  		document.documentElement.style.cursor='url("http://cur.cursors-4u.net/others/oth-8/oth759.cur"),auto'
+  		var flag=0
+  		var flag1=0
+  		var rect = mycanvas.getBoundingClientRect()
+  		mycanvas.onmouseup=secondpoint2
+  		mycanvas.onmousedown=firstpoint2
+  		mycanvas.onmousemove=movepoint2
+  		function firstpoint2(e3){
+
+   			flag1=1 
+   			flag=0
+  		}
+  
+  		function secondpoint2(e3){
+   			flag=1
+  		}
+  		function movepoint2(e3){
+   			if(flag1==1&&flag==0){
+    				rect = mycanvas.getBoundingClientRect()
+    				c.beginPath()
+    				c.fillStyle="white"
+    				c.arc(e3.clientX-rect.left,e3.clientY-rect.top,eraserthick,0,2*Math.PI,true)
+
+          			c.strokeStyle = 'white'
+    				c.fill()
+          			c.stroke()
+   			}
+  		}
+ 	}
+ 
+	function clear1(){
+  		c.fillStyle="white"
+  		c.fillRect(0,0,1200,425)
+ 	}
+
+ 	function circle(){
+  		setcolor(color2)
+  		document.documentElement.style.cursor='crosshair'
+  		var flag=0
+  		var flag1=0
+  		var rect = mycanvas.getBoundingClientRect()
+  		mycanvas.onmouseup=secondpoint3
+  		mycanvas.onmousedown=firstpoint3
+  		mycanvas.onmousemove=movepoint3
+  		function firstpoint3(e2){
+   			rect = mycanvas.getBoundingClientRect()
+   			x4=e2.clientX-rect.left
+   			x=0
+   			y=0
+   			y4=e2.clientY-rect.top
+   			im=c.getImageData(0,0,mycanvas.width,mycanvas.height)
+   			flag1=1 
+   			flag=0
+  		}
+  
+  		function secondpoint3(e2){
+   			flag=1
+   			var s={"Type":"circle", "startpointx":x4,"startpointy":y4,"radius":radius,"fill":fill,"color":color2}
+			wholedata.push(s)
+   			
+  		}
+
+  		function movepoint3(e2){
+   			if(flag1==1&&flag==0){
+    				c.putImageData(im,0,0)
+    				c.beginPath()
+   				rect = mycanvas.getBoundingClientRect()
+   				x2=e2.clientX-rect.left
+   				y2=e2.clientY-rect.top
+    				x=x2-x4
+    				y=y2-y4
+    				a=Math.pow(x,2)
+    				b=Math.pow(y,2)
+				radius=Math.sqrt(a+b)
+    				c.arc(x4,y4,radius,0,2*Math.PI,true)
+    				if(fill==1){
+     					c.fill()
+    				}
+    				c.stroke() 
+   			}
+  		}
+ 	}
+
+ 	function rect(){
+  		setcolor(color2)
+  		document.documentElement.style.cursor='crosshair'
+  		var flag=0
+  		var flag1=0
+  		var rect = mycanvas.getBoundingClientRect()
+  		mycanvas.onmouseup=secondpoint4
+  		mycanvas.onmousedown=firstpoint4
+  		mycanvas.onmousemove=movepoint4
+  		function firstpoint4(e2){
+   			im=c.getImageData(0,0,mycanvas.width,mycanvas.height)
+   			rect1 = mycanvas.getBoundingClientRect()
+   			x4=e2.clientX-rect1.left
+   			y4=e2.clientY-rect1.top
+   			flag1=1 
+   			flag=0
+   			x=0
+   			y=0
+  		}
+  
+  		function secondpoint4(e2){
+  			flag=1
+  			var s={"Type":"Rect", "startpointx":x4,"startpointy":y4,"width":w,"height":h,"fill":fill,"color":color2}
+			wholedata.push(s)
+  		}
+  		function movepoint4(e2){
+   			if(flag==0&&flag1==1){
+    				c.putImageData(im,0,0)
+				w=e2.clientX-rect1.left-x4
+				h=e2.clientY-rect1.top-y4
+    				rect1 = mycanvas.getBoundingClientRect()
+    				c.strokeRect(x4,y4,w,h)
+    				if(fill==1){
+     					c.fillRect(x4,y4,w,h)
+    				}
+   			} 
+  		}
+ 	}
+
+	function save(){
+		filename=document.getElementById("tex").value
+		if(filename!=""){
+			$.post("/h/",{
+				'f':filename,
+				'parameter':JSON.stringify(wholedata)
+    				
+				},
+				function(data,status){document.write(data)
+				});
+				
+		}else{
+			alert("You missed to specify filename")
+		}
+	}
+	
+	function draw(){
+		for(i in wholedata){
+			if(wholedata[i]['Type']=='line'){
+				c.beginPath()
+				x1=wholedata[i]['startpointx']
+				y1=wholedata[i]['startpointy']
+				x2=wholedata[i]['endpointx']
+				y2=wholedata[i]['endpointy']
+				c.moveTo(x1,y1)
+				c.lineTo(x2,y2)
+				c.strokeStyle=wholedata[i]['color']
+				c.stroke()
+				c.closePath()
+			}
+			if(wholedata[i]['Type']=='circle'){
+				c.beginPath()
+				x1=wholedata[i]['startpointx']
+				y1=wholedata[i]['startpointy']
+				c.arc(x1,y1,wholedata[i]['radius'],0,2*Math.PI,true)
+				c.strokeStyle=wholedata[i]['color']
+				c.fillStyle=wholedata[i]['color']
+				if(wholedata[i]['fill']==1){
+					c.fill()
+				}
+				c.stroke()
+				c.closePath()
+			}
+			if(wholedata[i]['Type']=='Rect'){
+				x1=wholedata[i]['startpointx']
+				y1=wholedata[i]['startpointy']
+				width=wholedata[i]['width']
+				height=wholedata[i]['height']
+				c.strokeStyle=wholedata[i]['color']
+				c.fillStyle=wholedata[i]['color']
+				c.strokeRect(x1,y1,width,height)
+				if(wholedata[i]['fill']==1){
+					c.fillRect(x1,y1,width,height)
+				}
+			}
+		}
+	} 
+</script>
+</body>
+</html>
